@@ -1,0 +1,549 @@
+<!-- Atmospheric Ambient Backdrops (Dynamic glows in the active persona's colors!) -->
+<div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
+  @if (state.activePersona() === 'coder') {
+    <div class="absolute top-[20%] right-[10%] w-[450px] h-[450px] bg-blue-500/10 rounded-full blur-[110px] transition-all duration-700"></div>
+    <div class="absolute bottom-[10%] left-[5%] w-[350px] h-[350px] bg-cyan-500/10 rounded-full blur-[90px] transition-all duration-700"></div>
+  } @else if (state.activePersona() === 'scientist') {
+    <div class="absolute top-[20%] right-[10%] w-[450px] h-[450px] bg-emerald-500/10 rounded-full blur-[110px] transition-all duration-700"></div>
+    <div class="absolute bottom-[10%] left-[5%] w-[350px] h-[350px] bg-teal-500/10 rounded-full blur-[90px] transition-all duration-700"></div>
+  } @else if (state.activePersona() === 'therapist') {
+    <div class="absolute top-[20%] right-[10%] w-[450px] h-[450px] bg-purple-500/10 rounded-full blur-[110px] transition-all duration-700"></div>
+    <div class="absolute bottom-[10%] left-[5%] w-[350px] h-[350px] bg-violet-400/10 rounded-full blur-[90px] transition-all duration-700"></div>
+  } @else if (state.activePersona() === 'doctor') {
+    <div class="absolute top-[20%] right-[10%] w-[450px] h-[450px] bg-red-500/10 rounded-full blur-[110px] transition-all duration-700"></div>
+    <div class="absolute bottom-[10%] left-[5%] w-[350px] h-[350px] bg-orange-500/10 rounded-full blur-[90px] transition-all duration-700"></div>
+  } @else if (state.activePersona() === 'unhinged') {
+    <div class="absolute top-[15%] right-[5%] w-[500px] h-[500px] bg-fuchsia-500/10 rounded-full blur-[120px] transition-all duration-700"></div>
+    <div class="absolute bottom-[15%] left-[2%] w-[400px] h-[400px] bg-pink-500/10 rounded-full blur-[100px] transition-all duration-700"></div>
+  }
+</div>
+
+<!-- Header -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-md h-16 backdrop-blur-xl border-b border-outline-variant/20 bg-surface/60">
+  <div class="flex items-center gap-md">
+    <button (click)="sidebarOpen.set(true)" class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform bg-transparent border-none">
+      menu
+    </button>
+    <h1 class="font-display text-24px font-bold tracking-tighter text-on-surface">Stitch AI</h1>
+  </div>
+  
+  <div class="flex items-center gap-lg">
+    <div class="hidden md:flex items-center gap-md">
+      <a routerLink="/" class="font-label text-11px font-semibold uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1 no-underline">
+        <span class="material-symbols-outlined text-[16px]">forum</span> Return to Chat
+      </a>
+    </div>
+    
+    <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center cursor-pointer overflow-hidden border border-outline-variant/30">
+      <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9-M6hNqpIUOuQ0vtr-v1Sh1WcPfUAgaUn1ZKQF_ZvVdwqzjGoOlqnyC5fy38MhT4-gNFEh9QElrJtntcY3lIsAiMBMJBEVNsz8B5U-s02eWSRiXpSR7jjKwo6agyQkerUitALu0Rv9HW_-tEiuXBe1_UZLJGvmB3wXhDjKZBS8p5u-F827qdcLDVp0cvDbfULTAxhWki_nYbq6kFYac1v3rJaUfLnCLtf7Ax71p2ChbOd-Y_XM70oPvL1HSMIvY51z0VVOo0IawA">
+    </div>
+  </div>
+</header>
+
+<!-- Collapsible Navigation Drawer Sidebar -->
+<aside [class.translate-x-0]="sidebarOpen()" [class.-translate-x-full]="!sidebarOpen()" class="fixed inset-y-0 left-0 z-[60] flex flex-col w-sidebar-width h-full bg-surface-container border-r border-outline-variant/30 shadow-2xl transition-transform duration-300 md:translate-x-0">
+  <div class="p-lg flex flex-col gap-sm border-b border-outline-variant/20 min-h-16 justify-center">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-md">
+        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary shadow-lg shadow-primary/10">
+          <span class="material-symbols-outlined">hub</span>
+        </div>
+        <div>
+          <p class="font-display text-[18px] font-bold text-primary">Stitch Master</p>
+          <p class="text-[12px] text-on-surface-variant font-mono">Expert Mode Active</p>
+        </div>
+      </div>
+      <button (click)="sidebarOpen.set(false)" class="material-symbols-outlined md:hidden text-on-surface-variant bg-transparent border-none">
+        close
+      </button>
+    </div>
+  </div>
+
+  <nav class="flex-1 py-md overflow-y-auto custom-scrollbar">
+    <div class="px-sm mb-xs text-[10px] font-mono tracking-widest font-bold text-on-surface-variant/60 uppercase">SELECT ACTIVE PERSONALITY</div>
+    <div class="space-y-1">
+      <button 
+        (click)="state.setPersona('coder'); sidebarOpen.set(false)"
+        [class.bg-secondary-container]="state.activePersona() === 'coder'"
+        [class.text-on-secondary-container]="state.activePersona() === 'coder'"
+        class="w-full text-left flex items-center gap-md px-md py-sm mx-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200 border-none bg-transparent">
+        <span class="material-symbols-outlined transition-colors" [class.text-blue-400]="state.activePersona() === 'coder'">code</span>
+        <span class="font-sans text-[14px] font-medium">Coder</span>
+      </button>
+
+      <button 
+        (click)="state.setPersona('scientist'); sidebarOpen.set(false)"
+        [class.bg-secondary-container]="state.activePersona() === 'scientist'"
+        [class.text-on-secondary-container]="state.activePersona() === 'scientist'"
+        class="w-full text-left flex items-center gap-md px-md py-sm mx-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200 border-none bg-transparent">
+        <span class="material-symbols-outlined transition-colors" [class.text-emerald-400]="state.activePersona() === 'scientist'">science</span>
+        <span class="font-sans text-[14px] font-medium">Scientist</span>
+      </button>
+
+      <button 
+        (click)="state.setPersona('therapist'); sidebarOpen.set(false)"
+        [class.bg-secondary-container]="state.activePersona() === 'therapist'"
+        [class.text-on-secondary-container]="state.activePersona() === 'therapist'"
+        class="w-full text-left flex items-center gap-md px-md py-sm mx-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200 border-none bg-transparent">
+        <span class="material-symbols-outlined transition-colors" [class.text-purple-400]="state.activePersona() === 'therapist'">psychology</span>
+        <span class="font-sans text-[14px] font-medium">Therapist</span>
+      </button>
+
+      <button 
+        (click)="state.setPersona('doctor'); sidebarOpen.set(false)"
+        [class.bg-secondary-container]="state.activePersona() === 'doctor'"
+        [class.text-on-secondary-container]="state.activePersona() === 'doctor'"
+        class="w-full text-left flex items-center gap-md px-md py-sm mx-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200 border-none bg-transparent">
+        <span class="material-symbols-outlined transition-colors" [class.text-red-400]="state.activePersona() === 'doctor'">medical_services</span>
+        <span class="font-sans text-[14px] font-medium">Doctor</span>
+      </button>
+
+      <button 
+        (click)="state.setPersona('unhinged'); sidebarOpen.set(false)"
+        [class.bg-secondary-container]="state.activePersona() === 'unhinged'"
+        [class.text-on-secondary-container]="state.activePersona() === 'unhinged'"
+        class="w-full text-left flex items-center gap-md px-md py-sm mx-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200 border-none bg-transparent">
+        <span class="material-symbols-outlined transition-colors" [class.text-fuchsia-400]="state.activePersona() === 'unhinged'">psychiatry</span>
+        <span class="font-sans text-[14px] font-medium">Unhinged</span>
+      </button>
+    </div>
+
+    <div class="mt-8 px-md space-y-2 md:hidden">
+      <a routerLink="/" class="flex items-center gap-md px-md py-sm rounded-full text-primary hover:bg-surface-variant/40 bg-transparent text-[14px] font-medium no-underline">
+        <span class="material-symbols-outlined">forum</span>
+        <span>Go back to Chat</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="p-md border-t border-outline-variant/20 bg-surface-container-lowest/40">
+    <div class="flex items-center justify-between text-on-surface-variant text-[11px] font-mono font-bold tracking-wider">
+      <span>SYSTEM v2.4.0</span>
+      <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> ONLINE</span>
+    </div>
+  </div>
+</aside>
+
+<!-- Configuration Page Body Section -->
+<main class="md:ml-sidebar-width pt-20 pb-24 px-gutter flex flex-col items-center select-none">
+  <div class="w-full max-w-max-content-width flex flex-col gap-lg">
+    
+    <!-- Section Header Page Info -->
+    <div class="flex flex-col gap-xs mb-md md:flex-row md:items-center md:justify-between">
+      <div>
+        <h2 class="font-display text-[26px] md:text-[30px] font-bold text-primary tracking-tight">Persona Configuration</h2>
+        <p class="text-body-sm text-on-surface-variant mt-1">
+          Fine-tune the intelligence fabric and data roots for the 
+          <span class="font-bold underline text-white select-text font-mono uppercase">{{ state.activePersonaDetails().name }}</span> persona.
+        </p>
+      </div>
+
+      <!-- Quick back button -->
+      <a routerLink="/" class="mt-4 md:mt-0 font-mono text-[11px] font-bold tracking-wider text-emerald-400 border border-emerald-500/30 px-md py-2 rounded-full bg-emerald-500/5 hover:bg-emerald-500/15 transition-all no-underline flex items-center gap-1">
+        <span class="material-symbols-outlined text-[14px]">forum</span> Return to Chat
+      </a>
+    </div>
+
+    <!-- Bento Grid Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+      
+      <!-- Connectors Card Core (Data Connectors) -->
+      <section class="md:col-span-7 glass-panel rounded-xl p-lg flex flex-col gap-md">
+        <div class="flex items-center justify-between mb-sm">
+          <h3 class="font-mono text-[11px] tracking-wider font-bold text-primary flex items-center gap-sm uppercase">
+            <span class="material-symbols-outlined text-sm">link</span>
+            Data Connectors
+          </h3>
+          <span class="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded">
+            {{ (state.googleDriveActive() ? 1 : 0) + (state.gmailActive() ? 1 : 0) + (state.calendarActive() ? 1 : 0) }} Active
+          </span>
+        </div>
+
+        <div class="space-y-4">
+          
+          <!-- Connector Item 1 (Google Drive) -->
+          <div class="flex items-center justify-between p-md bg-surface-container-high/45 rounded-lg border border-white/5">
+            <div class="flex items-center gap-md">
+              <div class="w-10 h-10 rounded bg-blue-500/10 flex items-center justify-center text-blue-400 border border-blue-500/10">
+                <span class="material-symbols-outlined">cloud</span>
+              </div>
+              <div>
+                <p class="font-sans text-[15px] font-bold text-on-surface">Google Drive</p>
+                <p class="text-[12px] text-on-surface-variant">Access cloud documents & sheets</p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input [checked]="state.googleDriveActive()" (change)="state.toggleGoogleDrive()" class="sr-only peer" type="checkbox">
+              <div class="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+          </div>
+
+          <!-- Connector Item 2 (Gmail) -->
+          <div class="flex items-center justify-between p-md bg-surface-container-high/45 rounded-lg border border-white/5">
+            <div class="flex items-center gap-md">
+              <div class="w-10 h-10 rounded bg-red-500/10 flex items-center justify-center text-red-400 border border-red-500/10">
+                <span class="material-symbols-outlined">mail</span>
+              </div>
+              <div>
+                <p class="font-sans text-[15px] font-bold text-on-surface">Gmail</p>
+                <p class="text-[12px] text-on-surface-variant">Real-time mail analysis</p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input [checked]="state.gmailActive()" (change)="state.toggleGmail()" class="sr-only peer" type="checkbox">
+              <div class="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+          </div>
+
+          <!-- Connector Item 3 (Calendar) -->
+          <div class="flex items-center justify-between p-md bg-surface-container-high/45 rounded-lg border border-white/5" [class.opacity-50]="!state.calendarActive()">
+            <div class="flex items-center gap-md">
+              <div class="w-10 h-10 rounded bg-orange-500/10 flex items-center justify-center text-orange-400 border border-orange-500/10">
+                <span class="material-symbols-outlined">calendar_today</span>
+              </div>
+              <div>
+                <p class="font-sans text-[15px] font-bold text-on-surface">Calendar</p>
+                <p class="text-[12px] text-on-surface-variant">Sync meeting context</p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input [checked]="state.calendarActive()" (change)="state.toggleCalendar()" class="sr-only peer" type="checkbox">
+              <div class="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Behavioral Module Setup Card -->
+      <section class="md:col-span-5 glass-panel rounded-xl p-lg flex flex-col gap-md">
+        <h3 class="font-mono text-[11px] tracking-wider font-bold text-primary flex items-center gap-sm uppercase">
+          <span class="material-symbols-outlined text-sm">psychology_alt</span>
+          Behavioral Engine
+        </h3>
+
+        <div class="flex flex-col gap-lg">
+          
+          <!-- Tone range selector -->
+          <div class="flex flex-col gap-sm">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-body-sm font-bold text-on-surface">Response Tone</span>
+              <span class="text-[11px] font-mono tracking-wider font-bold text-emerald-400 uppercase bg-emerald-500/10 px-2 py-0.5 rounded">
+                {{ state.toneLabel() }}
+              </span>
+            </div>
+            <input 
+              [value]="state.responseTone()" 
+              (input)="onToneSliderChange($event)" 
+              class="w-full accent-emerald-400" 
+              max="100" min="0" type="range" />
+            <div class="flex justify-between text-[10px] font-mono text-on-surface-variant/50 uppercase">
+              <span>Playful</span>
+              <span>Rigid</span>
+            </div>
+          </div>
+
+          <!-- Restraining toggles Checkboxes -->
+          <div class="flex flex-col gap-sm">
+            <span class="text-body-sm font-bold text-on-surface">Formatting Restraints</span>
+            <div class="grid grid-cols-2 gap-2">
+              
+              <label class="flex items-center gap-sm p-sm rounded bg-surface-container hover:bg-surface-container-high cursor-pointer transition-colors border border-white/5">
+                <input [checked]="state.formatMarkdown()" (change)="state.toggleMarkdown()" class="rounded border-outline-variant bg-transparent text-emerald-500 focus:ring-0 cursor-pointer" type="checkbox">
+                <span class="text-[12px] font-medium text-on-surface">Markdown</span>
+              </label>
+
+              <label class="flex items-center gap-sm p-sm rounded bg-surface-container hover:bg-surface-container-high cursor-pointer transition-colors border border-white/5">
+                <input [checked]="state.formatEmojis()" (change)="state.toggleEmojis()" class="rounded border-outline-variant bg-transparent text-emerald-500 focus:ring-0 cursor-pointer" type="checkbox">
+                <span class="text-[12px] font-medium text-on-surface">Emojis</span>
+              </label>
+
+              <label class="flex items-center gap-sm p-sm rounded bg-surface-container hover:bg-surface-container-high cursor-pointer transition-colors border border-white/5">
+                <input [checked]="state.formatLaTeX()" (change)="state.toggleLaTeX()" class="rounded border-outline-variant bg-transparent text-emerald-500 focus:ring-0 cursor-pointer" type="checkbox">
+                <span class="text-[12px] font-medium text-on-surface">LaTeX</span>
+              </label>
+
+              <label class="flex items-center gap-sm p-sm rounded bg-surface-container hover:bg-surface-container-high cursor-pointer transition-colors border border-white/5">
+                <input [checked]="state.formatCitations()" (change)="state.toggleCitations()" class="rounded border-outline-variant bg-transparent text-emerald-500 focus:ring-0 cursor-pointer" type="checkbox">
+                <span class="text-[12px] font-medium text-on-surface">Citations</span>
+              </label>
+
+            </div>
+          </div>
+
+          <!-- Dynamic Asset Toggles -->
+          <div class="flex flex-col gap-xs mt-1 border-t border-white/5 pt-md">
+            <span class="text-body-sm font-bold text-on-surface mb-1">Core Assets</span>
+            
+            <div class="flex items-center justify-between py-xs">
+              <span class="text-[13px] text-on-surface-variant">Web Search Grounding</span>
+              <label class="relative inline-flex items-center cursor-pointer scale-90">
+                <input [checked]="state.assetWebSearch()" (change)="state.toggleWebSearch()" class="sr-only peer" type="checkbox">
+                <div class="w-10 h-5 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+              </label>
+            </div>
+
+            <div class="flex items-center justify-between py-xs">
+              <span class="text-[13px] text-on-surface-variant">Computer Vision (Multimodal)</span>
+              <label class="relative inline-flex items-center cursor-pointer scale-90">
+                <input [checked]="state.assetComputerVision()" (change)="state.toggleComputerVision()" class="sr-only peer" type="checkbox">
+                <div class="w-10 h-5 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Layout Threads Customizer columns block -->
+      <section class="md:col-span-12 glass-panel rounded-xl p-lg flex flex-col gap-md border-t-2"
+               [ngClass]="{
+                 'border-blue-500/40': state.activePersona() === 'coder',
+                 'border-emerald-500/40': state.activePersona() === 'scientist',
+                 'border-purple-500/40': state.activePersona() === 'therapist',
+                 'border-red-500/40': state.activePersona() === 'doctor',
+                 'border-fuchsia-500/40': state.activePersona() === 'unhinged'
+               }">
+        
+        <div class="flex items-center justify-between">
+          <h3 class="font-mono text-[11px] tracking-wider font-bold text-primary flex items-center gap-sm uppercase">
+            <span class="material-symbols-outlined text-sm">format_paint</span>
+            Layout Thread Override: {{ state.activePersonaDetails().name }}
+          </h3>
+          
+          <button (click)="saveLayout()" class="bg-primary text-on-primary px-lg py-1.5 rounded-full font-mono text-[11px] tracking-wider font-bold hover:brightness-110 active:scale-95 transition-all text-clip shadow-md border-none cursor-pointer uppercase">
+            Save Layout Config
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-lg mt-md">
+          
+          <!-- Column 1: Code Blocks -->
+          <div class="flex flex-col gap-md p-md rounded-xl bg-surface-container-lowest border border-white/5">
+            <div class="flex items-center justify-between mb-sm">
+              <p class="text-body-lg font-bold text-on-surface">Code Blocks</p>
+              <span class="material-symbols-outlined text-primary">terminal</span>
+            </div>
+            
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-on-surface-variant">Syntax Highlighting</span>
+                <input [checked]="state.activeLayout().codeBlocks.syntaxHighlighting" (change)="toggleLayoutCheckbox('codeBlocks', 'syntaxHighlighting', $event)" class="rounded border-outline-variant bg-transparent text-emerald-400 focus:ring-0 cursor-pointer" type="checkbox" />
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-on-surface-variant">Line Numbers</span>
+                <input [checked]="state.activeLayout().codeBlocks.lineNumbers" (change)="toggleLayoutCheckbox('codeBlocks', 'lineNumbers', $event)" class="rounded border-outline-variant bg-transparent text-emerald-400 focus:ring-0 cursor-pointer" type="checkbox" />
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-on-surface-variant">Monospace Optimization</span>
+                <input [checked]="state.activeLayout().codeBlocks.monospace" (change)="toggleLayoutCheckbox('codeBlocks', 'monospace', $event)" class="rounded border-outline-variant bg-transparent text-emerald-400 focus:ring-0 cursor-pointer" type="checkbox" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Data Visualization -->
+          <div class="flex flex-col gap-md p-md rounded-xl bg-surface-container-lowest border border-white/5">
+            <div class="flex items-center justify-between mb-sm">
+              <p class="text-body-lg font-bold text-on-surface">Data Visualization</p>
+              <span class="material-symbols-outlined text-primary">monitoring</span>
+            </div>
+            
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-on-surface-variant">Auto-render Charts</span>
+                <input [checked]="state.activeLayout().dataViz.autoRenderCharts" (change)="toggleLayoutCheckbox('dataViz', 'autoRenderCharts', $event)" class="rounded border-outline-variant bg-transparent text-emerald-400 focus:ring-0 cursor-pointer" type="checkbox" />
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-on-surface-variant">3D Geometry View</span>
+                <input [checked]="state.activeLayout().dataViz.geometryView" (change)="toggleLayoutCheckbox('dataViz', 'geometryView', $event)" class="rounded border-outline-variant bg-transparent text-emerald-400 focus:ring-0 cursor-pointer" type="checkbox" />
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-on-surface-variant">Interactive Tables</span>
+                <input [checked]="state.activeLayout().dataViz.interactiveTables" (change)="toggleLayoutCheckbox('dataViz', 'interactiveTables', $event)" class="rounded border-outline-variant bg-transparent text-emerald-400 focus:ring-0 cursor-pointer" type="checkbox" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 3: Canvas Dynamics -->
+          <div class="flex flex-col gap-md p-md rounded-xl bg-surface-container-lowest border border-white/5">
+            <div class="flex items-center justify-between mb-sm">
+              <p class="text-body-lg font-bold text-on-surface">Canvas Dynamics</p>
+              <span class="material-symbols-outlined text-primary">layers</span>
+            </div>
+            
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-on-surface-variant">Side-by-side View</span>
+                <input [checked]="state.activeLayout().canvasDynamics.sideBySide" (change)="toggleLayoutCheckbox('canvasDynamics', 'sideBySide', $event)" class="rounded border-outline-variant bg-transparent text-emerald-400 focus:ring-0 cursor-pointer" type="checkbox" />
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-on-surface-variant">Focus Mode</span>
+                <input [checked]="state.activeLayout().canvasDynamics.focusMode" (change)="toggleLayoutCheckbox('canvasDynamics', 'focusMode', $event)" class="rounded border-outline-variant bg-transparent text-emerald-400 focus:ring-0 cursor-pointer" type="checkbox" />
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-on-surface-variant">Metadata Overlays</span>
+                <input [checked]="state.activeLayout().canvasDynamics.metadataOverlays" (change)="toggleLayoutCheckbox('canvasDynamics', 'metadataOverlays', $event)" class="rounded border-outline-variant bg-transparent text-emerald-400 focus:ring-0 cursor-pointer" type="checkbox" />
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Media Storage Hub Section -->
+      <section class="md:col-span-12 glass-panel rounded-xl p-lg flex flex-col gap-lg">
+        
+        <div class="flex items-center justify-between select-text border-b border-white/5 pb-2">
+          <h3 class="font-mono text-[11px] tracking-wider font-bold text-primary flex items-center gap-sm uppercase">
+            <span class="material-symbols-outlined text-sm">inventory_2</span>
+            Media Storage Hub
+          </h3>
+          <div class="flex gap-md font-mono text-[11px] text-zinc-400">
+            <span>1.8 GB / 10 GB (MAX)</span>
+          </div>
+        </div>
+
+        <!-- Chibi Avatar Templates (Displays the lovely 3D characters hotlink artwork exactly) -->
+        <div class="flex flex-col gap-md mt-sm">
+          <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined text-primary text-sm">face</span>
+            <h4 class="font-mono text-[11px] tracking-wider text-on-surface-variant uppercase font-bold">Chibi Avatar Templates</h4>
+          </div>
+
+          <!-- Master horizontal template artwork with responsive fade on hover -->
+          <div class="group relative h-[300px] rounded-xl overflow-hidden border border-outline-variant/30 bg-primary-container cursor-default">
+            <img 
+              referrerpolicy="no-referrer"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJPqPvscD8qPHoVSnEwLbF9uJgoLptWS_AoQb9N6kEBKny2jmJkdz4eErMfXhRcGd0iAjgYPZSjFosxkbertDtMpIY9I6tiRHqwse9EKSRWeWFgl2FVqoTlWEZU5licxX_kr-M2_v3SPWwcPtoR0EA7Bbpuivtqr-KinhDhL3HSBjxcjFLa9tlpOGkHlHu6ZrZCtKq3HVvL-jgfQArxeAZX7EiOCpUlKaNhnMrot3K68zxPzwWA7ZUPtPu-dQEBFwvuV6S4FHoSuI" 
+              alt="Chibi Avatar Templates" 
+              class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-dim/95 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 text-left">
+              <p class="text-body-lg text-white font-bold select-text text-lg">Master Template Set</p>
+              <p class="text-body-sm text-on-surface-variant mt-0.5 select-text">3D Chibi Figures • High Resolution Render (Astronaut / Hacker / Mage) • 580 MB</p>
+            </div>
+            <div class="absolute top-4 right-4 bg-emerald-500/20 backdrop-blur-md px-sm py-1 rounded text-[10px] text-emerald-400 font-mono font-bold uppercase tracking-widest border border-emerald-500/30">
+              Active Template Set
+            </div>
+          </div>
+
+          <!-- Small responsive sub-cards mapping visual rocket/terminal/wand triggers -->
+          <div class="grid grid-cols-3 gap-md">
+            
+            <div class="group relative aspect-square rounded-xl overflow-hidden border border-outline-variant/20 bg-surface-container-lowest/80 cursor-pointer hover:border-blue-500/60 transition-all text-center flex flex-col items-center justify-center p-md">
+              <span class="material-symbols-outlined text-blue-400 text-3xl group-hover:scale-110 transition-transform duration-300">rocket_launch</span>
+              <p class="text-[9px] font-mono uppercase text-on-surface-variant tracking-wider mt-2 group-hover:text-white">Sci-Fi Explorer</p>
+            </div>
+
+            <div class="group relative aspect-square rounded-xl overflow-hidden border border-outline-variant/20 bg-surface-container-lowest/80 cursor-pointer hover:border-emerald-500/60 transition-all text-center flex flex-col items-center justify-center p-md">
+              <span class="material-symbols-outlined text-emerald-400 text-3xl group-hover:scale-110 transition-transform duration-300">terminal</span>
+              <p class="text-[9px] font-mono uppercase text-on-surface-variant tracking-wider mt-2 group-hover:text-white">Cyberpunk Coder</p>
+            </div>
+
+            <div class="group relative aspect-square rounded-xl overflow-hidden border border-outline-variant/20 bg-surface-container-lowest/80 cursor-pointer hover:border-purple-500/60 transition-all text-center flex flex-col items-center justify-center p-md">
+              <span class="material-symbols-outlined text-purple-400 text-3xl group-hover:scale-110 transition-transform duration-300">auto_fix_high</span>
+              <p class="text-[9px] font-mono uppercase text-on-surface-variant tracking-wider mt-2 group-hover:text-white">Fantasy Mage</p>
+            </div>
+
+          </div>
+
+          <div class="border-b border-white/5 my-xs"></div>
+        </div>
+
+        <!-- Files list grid & Drag and drop uploader -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-md mt-sm">
+          
+          <!-- Loop files dynamically from StitchState! -->
+          @for (file of state.mediaFiles(); track file.id) {
+            <div class="group relative aspect-[16/10] rounded-lg overflow-hidden border border-outline-variant/30 bg-surface-container-lowest/60 hover:bg-surface-container-lowest transition-all hover:border-primary">
+              <div class="absolute inset-0 bg-gradient-to-t from-surface-dim/95 via-surface-dim/40 to-transparent pointer-events-none"></div>
+              
+              <!-- File category emblem -->
+              <div class="absolute inset-0 flex items-center justify-center select-none pb-4">
+                <span class="material-symbols-outlined text-primary/45 group-hover:scale-115 transition-transform duration-300 text-4xl">
+                  {{ file.icon }}
+                </span>
+              </div>
+
+              <!-- Content and details -->
+              <div class="absolute bottom-2 left-3 right-3 text-left">
+                <p class="text-[10px] text-white truncate font-bold select-all font-sans">{{ file.name }}</p>
+                <p class="text-[8px] text-on-surface-variant/70 font-mono mt-0.5">{{ file.size }} • {{ file.timeLabel }}</p>
+              </div>
+
+              <!-- Delete Action button on hover -->
+              <button 
+                (click)="state.removeMediaFile(file.id)" 
+                class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 p-1 rounded-full bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white transition-all duration-250 cursor-pointer scale-90 flex items-center justify-center">
+                <span class="material-symbols-outlined text-[12px]">delete</span>
+              </button>
+            </div>
+          }
+
+          <!-- Ingest File Drag and Drop / Explorer File Ingester Card -->
+          <div 
+            (dragover)="onDragOver($event)" 
+            (dragleave)="onDragLeave()"
+            (drop)="onDrop($event)"
+            [class.border-emerald-500]="isDragging()"
+            [class.bg-emerald-500/5]="isDragging()"
+            class="group relative aspect-[16/10] rounded-lg overflow-hidden border-2 border-dashed border-outline-variant/30 bg-surface-container-lowest flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-surface-variant/20 hover:border-primary transition-all p-3 text-center">
+            
+            <input 
+              #fileUploadInput
+              (change)="onFileSelected($event)"
+              type="file" class="hidden" />
+
+            <div (click)="fileUploadInput.click()" class="flex flex-col items-center justify-center gap-1 w-full h-full">
+              <span class="material-symbols-outlined text-on-surface-variant group-hover:text-emerald-400 transition-colors text-2xl">
+                cloud_upload
+              </span>
+              <span class="text-[10px] font-mono tracking-wider font-bold text-on-surface-variant uppercase group-hover:text-white">
+                {{ isDragging() ? "Drop File Now" : "Ingest File" }}
+              </span>
+              <span class="text-[8px] font-mono text-on-surface-variant/40">
+                DRAG &amp; DROP OR CLICK
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<!-- Unified Save layout dynamic success check notification - Toast card -->
+@if (showToast()) {
+  <div class="fixed top-20 right-gutter z-[100] animate-fade-in pointer-events-none">
+    <div class="bg-surface-container border-2 border-emerald-500/40 px-lg py-md rounded-2xl flex items-center gap-md shadow-2xl backdrop-blur-xl">
+      <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 border border-emerald-500/30 font-bold">
+        <span class="material-symbols-outlined text-[16px]">done_all</span>
+      </div>
+      <div>
+        <h4 class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-widest">STITCH AI OVERLAY</h4>
+        <p class="text-sm font-sans text-on-surface mt-0.5">{{ toastMessage() }}</p>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Tablet/Mobile bottom nav bar trigger link -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-30 flex justify-around items-center px-lg py-sm pb-safe bg-surface-container-low/85 backdrop-blur-md border-t border-outline-variant/10 shadow-lg">
+  <a routerLink="/" class="text-on-surface p-2 hover:text-primary active:scale-90 transition-all duration-300 relative no-underline flex flex-col items-center">
+    <span class="material-symbols-outlined" [class.text-emerald-400]="state.activePersona() === 'scientist'">bolt</span>
+    <span class="text-[9px] font-mono">Chat</span>
+  </a>
+
+  <!-- Centered Action -->
+  <div class="bg-primary-container text-on-primary-container rounded-full p-2.5 scale-110 shadow-lg cursor-pointer">
+    <span class="material-symbols-outlined animate-spin-slow">auto_awesome</span>
+  </div>
+
+  <a routerLink="/config" class="text-on-surface p-2 hover:text-primary active:scale-90 transition-all duration-300 no-underline flex flex-col items-center">
+    <span class="material-symbols-outlined">settings</span>
+    <span class="text-[9px] font-mono">Settings</span>
+  </a>
+</nav>

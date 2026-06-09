@@ -1,0 +1,500 @@
+<!-- Atmospheric Ambient Backdrops (Dynamic glows in the active persona's colors!) -->
+<div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
+  @if (state.activePersona() === 'coder') {
+    <div class="absolute top-[20%] right-[10%] w-[450px] h-[450px] bg-blue-500/10 rounded-full blur-[110px] transition-all duration-700"></div>
+    <div class="absolute bottom-[10%] left-[5%] w-[350px] h-[350px] bg-cyan-500/10 rounded-full blur-[90px] transition-all duration-700"></div>
+  } @else if (state.activePersona() === 'scientist') {
+    <div class="absolute top-[20%] right-[10%] w-[450px] h-[450px] bg-emerald-500/10 rounded-full blur-[110px] transition-all duration-700"></div>
+    <div class="absolute bottom-[10%] left-[5%] w-[350px] h-[350px] bg-teal-500/10 rounded-full blur-[90px] transition-all duration-700"></div>
+  } @else if (state.activePersona() === 'therapist') {
+    <div class="absolute top-[20%] right-[10%] w-[450px] h-[450px] bg-purple-500/10 rounded-full blur-[110px] transition-all duration-700"></div>
+    <div class="absolute bottom-[10%] left-[5%] w-[350px] h-[350px] bg-violet-400/10 rounded-full blur-[90px] transition-all duration-700"></div>
+  } @else if (state.activePersona() === 'doctor') {
+    <div class="absolute top-[20%] right-[10%] w-[450px] h-[450px] bg-red-500/10 rounded-full blur-[110px] transition-all duration-700"></div>
+    <div class="absolute bottom-[10%] left-[5%] w-[350px] h-[350px] bg-orange-500/10 rounded-full blur-[90px] transition-all duration-700"></div>
+  } @else if (state.activePersona() === 'unhinged') {
+    <div class="absolute top-[15%] right-[5%] w-[500px] h-[500px] bg-fuchsia-500/10 rounded-full blur-[120px] transition-all duration-700"></div>
+    <div class="absolute bottom-[15%] left-[2%] w-[400px] h-[400px] bg-pink-500/10 rounded-full blur-[100px] transition-all duration-700"></div>
+  }
+</div>
+
+<!-- Header -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-md h-16 backdrop-blur-xl border-b border-outline-variant/20 bg-surface/60">
+  <div class="flex items-center gap-md">
+    <button (click)="toggleSidebar()" class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform bg-transparent border-none">
+      menu
+    </button>
+    <h1 class="font-display text-24px font-bold tracking-tighter text-on-surface">Stitch AI</h1>
+  </div>
+  
+  <div class="flex items-center gap-lg">
+    <div class="hidden md:flex items-center gap-md">
+      <a routerLink="/config" class="font-label text-11px font-semibold uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1 no-underline">
+        <span class="material-symbols-outlined text-[16px]">settings</span> Persona Settings
+      </a>
+    </div>
+    
+    <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center cursor-pointer overflow-hidden border border-outline-variant/30">
+      <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9-M6hNqpIUOuQ0vtr-v1Sh1WcPfUAgaUn1ZKQF_ZvVdwqzjGoOlqnyC5fy38MhT4-gNFEh9QElrJtntcY3lIsAiMBMJBEVNsz8B5U-s02eWSRiXpSR7jjKwo6agyQkerUitALu0Rv9HW_-tEiuXBe1_UZLJGvmB3wXhDjKZBS8p5u-F827qdcLDVp0cvDbfULTAxhWki_nYbq6kFYac1v3rJaUfLnCLtf7Ax71p2ChbOd-Y_XM70oPvL1HSMIvY51z0VVOo0IawA">
+    </div>
+  </div>
+</header>
+
+<!-- Collapsible Navigation Drawer Slide-over for Mobile & Desktop -->
+<aside [class.translate-x-0]="sidebarOpen()" [class.-translate-x-full]="!sidebarOpen()" class="fixed inset-y-0 left-0 z-[60] flex flex-col w-sidebar-width h-full bg-surface-container border-r border-outline-variant/30 shadow-2xl transition-transform duration-300 md:translate-x-0">
+  <div class="p-lg flex flex-col gap-sm border-b border-outline-variant/20 min-h-16 justify-center">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-md">
+        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary shadow-lg shadow-primary/10">
+          <span class="material-symbols-outlined">hub</span>
+        </div>
+        <div>
+          <p class="font-display text-[18px] font-bold text-primary">Stitch Master</p>
+          <p class="text-[12px] text-on-surface-variant font-mono">Expert Mode Active</p>
+        </div>
+      </div>
+      <button (click)="toggleSidebar()" class="material-symbols-outlined md:hidden text-on-surface-variant bg-transparent border-none">
+        close
+      </button>
+    </div>
+  </div>
+
+  <nav class="flex-1 py-md overflow-y-auto custom-scrollbar">
+    <div class="px-sm mb-xs text-[10px] font-mono tracking-widest font-bold text-on-surface-variant/60 uppercase">PERSONA THREADS</div>
+    <div class="space-y-1">
+      <button 
+        (click)="state.setPersona('coder'); sidebarOpen.set(false)"
+        [class.bg-secondary-container]="state.activePersona() === 'coder'"
+        [class.text-on-secondary-container]="state.activePersona() === 'coder'"
+        class="w-full text-left flex items-center gap-md px-md py-sm mx-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200 border-none bg-transparent">
+        <span class="material-symbols-outlined transition-colors" [class.text-blue-400]="state.activePersona() === 'coder'">code</span>
+        <span class="font-sans text-[14px] font-medium">Coder</span>
+      </button>
+
+      <button 
+        (click)="state.setPersona('scientist'); sidebarOpen.set(false)"
+        [class.bg-secondary-container]="state.activePersona() === 'scientist'"
+        [class.text-on-secondary-container]="state.activePersona() === 'scientist'"
+        class="w-full text-left flex items-center gap-md px-md py-sm mx-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200 border-none bg-transparent">
+        <span class="material-symbols-outlined transition-colors" [class.text-emerald-400]="state.activePersona() === 'scientist'">science</span>
+        <span class="font-sans text-[14px] font-medium">Scientist</span>
+      </button>
+
+      <button 
+        (click)="state.setPersona('therapist'); sidebarOpen.set(false)"
+        [class.bg-secondary-container]="state.activePersona() === 'therapist'"
+        [class.text-on-secondary-container]="state.activePersona() === 'therapist'"
+        class="w-full text-left flex items-center gap-md px-md py-sm mx-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200 border-none bg-transparent">
+        <span class="material-symbols-outlined transition-colors" [class.text-purple-400]="state.activePersona() === 'therapist'">psychology</span>
+        <span class="font-sans text-[14px] font-medium">Therapist</span>
+      </button>
+
+      <button 
+        (click)="state.setPersona('doctor'); sidebarOpen.set(false)"
+        [class.bg-secondary-container]="state.activePersona() === 'doctor'"
+        [class.text-on-secondary-container]="state.activePersona() === 'doctor'"
+        class="w-full text-left flex items-center gap-md px-md py-sm mx-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200 border-none bg-transparent">
+        <span class="material-symbols-outlined transition-colors" [class.text-red-400]="state.activePersona() === 'doctor'">medical_services</span>
+        <span class="font-sans text-[14px] font-medium">Doctor</span>
+      </button>
+
+      <button 
+        (click)="state.setPersona('unhinged'); sidebarOpen.set(false)"
+        [class.bg-secondary-container]="state.activePersona() === 'unhinged'"
+        [class.text-on-secondary-container]="state.activePersona() === 'unhinged'"
+        class="w-full text-left flex items-center gap-md px-md py-sm mx-2 rounded-full text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200 border-none bg-transparent">
+        <span class="material-symbols-outlined transition-colors" [class.text-fuchsia-400]="state.activePersona() === 'unhinged'">psychiatry</span>
+        <span class="font-sans text-[14px] font-medium">Unhinged</span>
+      </button>
+    </div>
+
+    <!-- Router links for quick access on sidebar (Mobile helper) -->
+    <div class="mt-8 px-md space-y-2 md:hidden">
+      <a routerLink="/config" class="flex items-center gap-md px-md py-sm rounded-full text-primary hover:bg-surface-variant/40 bg-transparent text-[14px] font-medium no-underline">
+        <span class="material-symbols-outlined">settings</span>
+        <span>Go to Configurations</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="p-md border-t border-outline-variant/20 bg-surface-container-lowest/40">
+    <div class="flex items-center justify-between text-on-surface-variant text-[11px] font-mono font-bold tracking-wider">
+      <span>SYSTEM v2.4.0</span>
+      <span class="flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> ONLINE
+      </span>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Workspace Content Area -->
+<main (click)="closeMediaPopover()" class="md:ml-sidebar-width pt-20 pb-36 min-h-screen flex flex-col items-center">
+  
+  <!-- Persona Carousel Slider Header -->
+  <section class="w-full max-w-max-content-width px-gutter pt-lg">
+    <div class="flex items-center gap-sm mb-lg overflow-x-auto pb-4 custom-scrollbar">
+      
+      <!-- Coder Card -->
+      <div 
+        (click)="state.setPersona('coder')"
+        [class.ring-2]="state.activePersona() === 'coder'"
+        [class.ring-blue-500]="state.activePersona() === 'coder'"
+        class="persona-card glass-panel flex-shrink-0 min-w-[160px] p-md rounded-xl cursor-pointer hover:translate-y-[-2px] transition-all" 
+        style="--accent-color: #3b82f6;">
+        <span class="material-symbols-outlined text-[#3b82f6] mb-sm text-2xl">code</span>
+        <h3 class="font-display text-[16px] font-semibold text-on-surface mb-xs">Coder</h3>
+        <div class="stitching-border text-[#3b82f6]/30 h-[1px] w-full mb-sm"></div>
+        <p class="text-[12px] text-on-surface-variant leading-tight">Algorithm optimization & clean syntax.</p>
+      </div>
+
+      <!-- Scientist Card -->
+      <div 
+        (click)="state.setPersona('scientist')"
+        [class.ring-2]="state.activePersona() === 'scientist'"
+        [class.ring-emerald-500]="state.activePersona() === 'scientist'"
+        class="persona-card glass-panel flex-shrink-0 min-w-[160px] p-md rounded-xl cursor-pointer hover:translate-y-[-2px] transition-all" 
+        style="--accent-color: #10b981;">
+        <span class="material-symbols-outlined text-[#10b981] mb-sm text-2xl">science</span>
+        <h3 class="font-display text-[16px] font-semibold text-on-surface mb-xs">Scientist</h3>
+        <div class="stitching-border text-[#10b981]/30 h-[1px] w-full mb-sm"></div>
+        <p class="text-[12px] text-on-surface-variant leading-tight">Hypothesis testing & data analysis.</p>
+      </div>
+
+      <!-- Therapist Card -->
+      <div 
+        (click)="state.setPersona('therapist')"
+        [class.ring-2]="state.activePersona() === 'therapist'"
+        [class.ring-purple-500]="state.activePersona() === 'therapist'"
+        class="persona-card glass-panel flex-shrink-0 min-w-[160px] p-md rounded-xl cursor-pointer hover:translate-y-[-2px] transition-all" 
+        style="--accent-color: #a78bfa;">
+        <span class="material-symbols-outlined text-[#a78bfa] mb-sm text-2xl">psychology</span>
+        <h3 class="font-display text-[16px] font-semibold text-on-surface mb-xs">Therapist</h3>
+        <div class="stitching-border text-[#a78bfa]/30 h-[1px] w-full mb-sm"></div>
+        <p class="text-[12px] text-on-surface-variant leading-tight font-sans">Empathetic listening & cognitive shifts.</p>
+      </div>
+
+      <!-- Doctor Card -->
+      <div 
+        (click)="state.setPersona('doctor')"
+        [class.ring-2]="state.activePersona() === 'doctor'"
+        [class.ring-red-500]="state.activePersona() === 'doctor'"
+        class="persona-card glass-panel flex-shrink-0 min-w-[160px] p-md rounded-xl cursor-pointer hover:translate-y-[-2px] transition-all" 
+        style="--accent-color: #ef4444;">
+        <span class="material-symbols-outlined text-[#ef4444] mb-sm text-2xl">medical_services</span>
+        <h3 class="font-display text-[16px] font-semibold text-on-surface mb-xs">Doctor</h3>
+        <div class="stitching-border text-[#ef4444]/30 h-[1px] w-full mb-sm"></div>
+        <p class="text-[12px] text-on-surface-variant leading-tight">Clinical precision & medical diagnostics.</p>
+      </div>
+
+      <!-- Unhinged Card -->
+      <div 
+        (click)="state.setPersona('unhinged')"
+        [class.ring-2]="state.activePersona() === 'unhinged'"
+        [class.ring-fuchsia-500]="state.activePersona() === 'unhinged'"
+        class="persona-card glass-panel flex-shrink-0 min-w-[160px] p-md rounded-xl cursor-pointer hover:translate-y-[-2px] transition-all" 
+        style="--accent-color: #d946ef;">
+        <span class="material-symbols-outlined text-[#d946ef] mb-sm text-2xl">psychiatry</span>
+        <h3 class="font-display text-[16px] font-semibold text-on-surface mb-xs">Unhinged</h3>
+        <div class="stitching-border text-[#d946ef]/30 h-[1px] w-full mb-sm"></div>
+        <p class="text-[12px] text-on-surface-variant leading-tight">Chaotic creativity & raw processing.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Model Engine Selector -->
+  <section class="w-full max-w-max-content-width px-gutter mb-lg">
+    <div class="flex justify-center">
+      <div class="bg-surface-container-high rounded-full p-1 flex gap-1 border border-outline-variant/10 shadow-inner">
+        
+        <button 
+          (click)="state.setEngine('AUTO')"
+          [class.bg-surface-variant]="state.currentEngine() === 'AUTO'"
+          [class.text-white]="state.currentEngine() === 'AUTO'"
+          class="px-md py-1.5 rounded-full font-mono text-[10px] uppercase font-bold tracking-wide text-on-surface-variant hover:text-primary transition-all border-none bg-transparent">
+          AUTO
+        </button>
+
+        <button 
+          (click)="state.setEngine('FAST')"
+          [class.bg-surface-variant]="state.currentEngine() === 'FAST'"
+          [class.text-white]="state.currentEngine() === 'FAST'"
+          class="px-md py-1.5 rounded-full font-mono text-[10px] uppercase font-bold tracking-wide text-on-surface-variant hover:text-primary transition-all border-none bg-transparent">
+          FAST
+        </button>
+
+        <button 
+          (click)="state.setEngine('EXPERT')"
+          [class.bg-primary]="state.currentEngine() === 'EXPERT'"
+          [class.text-on-primary]="state.currentEngine() === 'EXPERT'"
+          class="px-md py-1.5 rounded-full font-mono text-[10px] uppercase font-bold tracking-wide text-on-surface-variant hover:text-primary transition-all flex items-center gap-2 border-none bg-transparent">
+          EXPERT <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+        </button>
+
+        <button 
+          (click)="state.setEngine('HEAVY')"
+          [class.bg-surface-variant]="state.currentEngine() === 'HEAVY'"
+          [class.text-white]="state.currentEngine() === 'HEAVY'"
+          class="px-md py-1.5 rounded-full font-mono text-[10px] uppercase font-bold tracking-wide text-on-surface-variant hover:text-primary transition-all flex items-center gap-1 border-none bg-transparent">
+          HEAVY <span class="material-symbols-outlined text-[12px] text-yellow-400">bolt</span>
+        </button>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Central Live Conversational Chat Stream Canvas -->
+  <section class="w-full max-w-max-content-width px-gutter space-y-lg flex-1">
+    
+    @for (msg of state.messages(); track msg.id) {
+      
+      @if (msg.sender === 'user') {
+        <!-- User prompt card, styled properly -->
+        <div class="flex justify-end animate-fade-in">
+          <div class="bg-surface-container-high max-w-[85%] rounded-2xl rounded-tr-none px-lg py-md border border-outline-variant/10 shadow-lg">
+            <p class="text-on-surface-variant text-body-lg" style="white-space: pre-line;">{{ msg.text }}</p>
+            @if (msg.attachedFile) {
+              <div class="mt-sm flex items-center gap-sm px-sm py-1 bg-surface-container-lowest/50 rounded border border-white/5 text-[11px] font-mono text-zinc-400">
+                <span class="material-symbols-outlined text-[13px]">attach_file</span>
+                <span>Attached: {{ msg.attachedFile }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      } @else {
+        <!-- Assistant response thread, styled matching the active persona archetype -->
+        <div class="flex gap-md animate-fade-in">
+          
+          <!-- Avatar Icon with active colors -->
+          <div 
+            [ngClass]="{
+              'bg-blue-500/20 border-blue-500/40 text-blue-400': msg.persona === 'coder',
+              'bg-emerald-500/20 border-emerald-500/40 text-emerald-400': msg.persona === 'scientist',
+              'bg-purple-500/20 border-purple-500/40 text-purple-400': msg.persona === 'therapist',
+              'bg-red-500/20 border-red-500/40 text-red-400': msg.persona === 'doctor',
+              'bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400': msg.persona === 'unhinged'
+            }"
+            class="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center border shadow-md">
+            <span class="material-symbols-outlined text-md">{{ state.activeClassByPersonaMap[msg.persona].icon }}</span>
+          </div>
+
+          <!-- Message box -->
+          <div class="flex-1 space-y-md">
+            <div class="glass-panel rounded-2xl rounded-tl-none px-lg py-md border border-outline-variant/10 shadow-xl">
+              
+              <!-- Persona Indicator -->
+              <div class="flex items-center justify-between mb-sm border-b border-white/5 pb-1 select-none">
+                <span class="text-[11px] font-mono uppercase tracking-widest text-primary font-bold flex items-center gap-1">
+                  THREAD ACTIVE: {{ state.activeClassByPersonaMap[msg.persona].name }}
+                </span>
+                <span class="text-[10px] font-mono text-on-surface-variant/40">
+                  {{ msg.timestamp | date:'HH:mm:ss' }}
+                </span>
+              </div>
+
+              <!-- Main message content block with custom styled typography -->
+              <div class="leading-relaxed text-on-surface text-body-lg prose prose-invert max-w-none" [innerHTML]="renderMarkdown(msg.text)"></div>
+
+              <!-- LaTeX mathematical derivation block (Special for configurations) -->
+              @if (msg.formula) {
+                <div class="bg-surface-container-low/60 p-lg rounded-xl border border-outline-variant/20 my-md font-mono text-center overflow-x-auto shadow-inner">
+                  <div class="text-xl md:text-2xl text-emerald-300 py-2 select-all">
+                    $$ {{ msg.formula }} $$
+                  </div>
+                  <div class="text-[9px] font-mono text-on-surface-variant/40 uppercase tracking-widest mt-1">
+                    [KaTeX Scientific Equation Matrix Rendered]
+                  </div>
+                </div>
+              }
+
+              <!-- Advanced Multi-Record Data Table Visualizer -->
+              @if (msg.tableData) {
+                <div class="overflow-hidden border border-outline-variant/20 rounded-xl my-md bg-surface-container-lowest/50 backdrop-blur shadow-lg">
+                  <table class="w-full text-left font-mono text-[13px] border-collapse">
+                    <thead class="bg-surface-container-high/80 text-on-surface-variant font-mono text-[11px] font-bold tracking-wider uppercase border-b border-outline-variant/25">
+                      <tr>
+                        <th class="px-md py-sm">RUN_ID</th>
+                        <th class="px-md py-sm">ENERGY (eV)</th>
+                        <th class="px-md py-sm">BARRIER_H</th>
+                        <th class="px-md py-sm">PROBABILITY</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant/10">
+                      @for (row of msg.tableData; track row.runId) {
+                        <tr class="hover:bg-surface-variant/20 transition-colors">
+                          <td class="px-md py-sm text-on-surface/90 font-bold">{{ row.runId }}</td>
+                          <td class="px-md py-sm text-zinc-300">{{ row.energy | number:'1.2-2' }}</td>
+                          <td class="px-md py-sm text-zinc-300">{{ row.barrierH | number:'1.1-1' }}</td>
+                          <td class="px-md py-sm text-[#10b981] font-bold">{{ row.probability | number:'1.4-4' }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              }
+
+            </div>
+          </div>
+
+        </div>
+      }
+    } @empty {
+      <div class="text-center py-xl bg-surface-container/20 rounded-2xl border border-white/5 max-w-sm mx-auto">
+        <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-md text-emerald-400">hub</span>
+        <p class="text-on-surface text-body-lg font-medium">Stitch Console Initialized</p>
+        <p class="text-on-surface-variant text-body-sm px-md">Send a subatomic telemetry parameter or prompt into the workspace thread.</p>
+      </div>
+    }
+
+    <!-- Loading stream indicator -->
+    @if (state.isSending()) {
+      <div class="flex gap-md items-center animate-pulse">
+        <div class="w-10 h-10 rounded-full bg-surface-variant border border-outline-variant/30 flex items-center justify-center">
+          <span class="material-symbols-outlined text-emerald-400 animate-spin">cyclone</span>
+        </div>
+        <div class="glass-panel px-md py-sm rounded-full text-sm font-mono text-emerald-400 flex items-center gap-2">
+          <span>Stitching matrix with {{ state.activeClassByPersonaMap[state.activePersona()].name }} context...</span>
+        </div>
+      </div>
+    }
+
+  </section>
+
+</main>
+
+<!-- Bottom Query Bar Area -->
+<div class="fixed bottom-0 left-0 md:left-sidebar-width right-0 p-lg bg-gradient-to-t from-surface via-surface/95 to-transparent z-40">
+  <div class="max-w-max-content-width mx-auto">
+    
+    <!-- Micro-interaction feedback for recording -->
+    @if (isRecording()) {
+      <div class="flex justify-center mb-sm animate-bounce">
+        <div class="bg-red-500/20 text-red-400 px-md py-1.5 rounded-full border border-red-500/40 text-[12px] font-mono flex items-center gap-2 shadow-lg">
+          <span class="w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+          <span>STITCHING VOICE MATRIX IN REAL TIME (CLICK MIC TO CLOSE)</span>
+        </div>
+      </div>
+    }
+
+    <!-- Attachment display banner -->
+    @if (state.attachedFile()) {
+      <div class="flex items-center justify-between mx-2 mb-sm bg-surface-container-high/90 px-md py-sm rounded-xl border border-emerald-500/30 text-xs text-on-surface shadow-md">
+        <div class="flex items-center gap-sm">
+          <span class="material-symbols-outlined text-emerald-400 text-[16px]">{{ state.attachedFile()?.icon }}</span>
+          <span class="font-bold">{{ state.attachedFile()?.name }}</span>
+          <span class="text-[10px] text-on-surface-variant font-mono">({{ state.attachedFile()?.size }})</span>
+        </div>
+        <button (click)="state.attachedFile.set(null)" class="material-symbols-outlined text-[16px] text-red-400 hover:text-red-300 transition-colors bg-transparent border-none">
+          cancel
+        </button>
+      </div>
+    }
+
+    <!-- Floated Glass Input Body -->
+    <div class="flex items-end gap-sm glass-panel p-2 rounded-[24px] border border-outline-variant/30 shadow-2xl transition-all focus-within:ring-2"
+         [class.focus-within:ring-blue-500]="state.activePersona() === 'coder'"
+         [class.focus-within:ring-emerald-500]="state.activePersona() === 'scientist'"
+         [class.focus-within:ring-purple-500]="state.activePersona() === 'therapist'"
+         [class.focus-within:ring-red-500]="state.activePersona() === 'doctor'"
+         [class.focus-within:ring-fuchsia-500]="state.activePersona() === 'unhinged'">
+      
+      <!-- Plus Attachment triggering popover -->
+      <button 
+        (click)="toggleMediaPopover($event)" 
+        id="media-trigger"
+        class="w-10 h-10 rounded-full hover:bg-surface-variant/50 flex items-center justify-center transition-colors pb-0 cursor-pointer text-on-surface-variant select-none border-none bg-transparent">
+        <span class="material-symbols-outlined text-xl">add</span>
+      </button>
+
+      <!-- Expandable prompt box -->
+      <div class="flex-1 min-h-[40px] flex items-center px-sm">
+        <textarea 
+          #textInputEl
+          (input)="onTextChange($event)"
+          (keydown.enter)="onKeydownEnter($event, textInputEl)"
+          class="w-full bg-transparent border-none outline-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant/40 py-2 resize-none max-h-32 custom-scrollbar font-sans text-[15px]" 
+          placeholder="Thread a message with {{ state.activeClassByPersonaMap[state.activePersona()].name }} context..." 
+          rows="1"></textarea>
+      </div>
+
+      <!-- Control Group keys -->
+      <div class="flex items-center gap-xs pr-sm select-none">
+        <button 
+          (click)="toggleRecording()"
+          class="p-2 transition-colors border-none bg-transparent rounded-full flex items-center justify-center"
+          [class.text-red-400]="isRecording()"
+          [class.text-on-surface-variant]="!isRecording()"
+          [class.hover:text-primary]="!isRecording()">
+          <span class="material-symbols-outlined text-lg">mic</span>
+        </button>
+
+        <button 
+          (click)="handleSend(textInputEl)"
+          [class.bg-blue-500]="state.activePersona() === 'coder'"
+          [class.bg-emerald-500]="state.activePersona() === 'scientist'"
+          [class.bg-purple-500]="state.activePersona() === 'therapist'"
+          [class.bg-red-500]="state.activePersona() === 'doctor'"
+          [class.bg-fuchsia-500]="state.activePersona() === 'unhinged'"
+          class="w-10 h-10 rounded-full text-white flex items-center justify-center hover:shadow-lg active:scale-95 transition-all cursor-pointer border-none shadow-md">
+          <span class="material-symbols-outlined text-lg font-bold">arrow_upward</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Live simulated connector dropdown list -->
+    <div 
+      [class.hidden]="!mediaPopoverOpen()"
+      id="media-popover"
+      class="absolute bottom-24 left-lg w-52 glass-panel rounded-2xl border border-outline-variant/30 shadow-2xl p-sm z-50 animate-fade-in text-left">
+      <div class="flex flex-col gap-1">
+        <div class="text-[9px] font-mono font-bold tracking-wider px-sm py-1 text-on-surface-variant/60 uppercase">ATTACH INTEGRATED SOURCE</div>
+        
+        <button 
+          (click)="attachFile('pdf')"
+          class="flex items-center gap-md p-sm rounded-xl hover:bg-surface-variant/50 text-[13px] text-on-surface-variant text-left border-none bg-transparent w-full">
+          <span class="material-symbols-outlined text-red-400">picture_as_pdf</span> 
+          <span>Q3_Projections.pdf</span>
+        </button>
+
+        <button 
+          (click)="attachFile('xlsx')"
+          class="flex items-center gap-md p-sm rounded-xl hover:bg-surface-variant/50 text-[13px] text-on-surface-variant text-left border-none bg-transparent w-full">
+          <span class="material-symbols-outlined text-green-400">table_chart</span> 
+          <span>Onboarding.xlsx</span>
+        </button>
+
+        <button 
+          (click)="attachFile('csv')"
+          class="flex items-center gap-md p-sm rounded-xl hover:bg-surface-variant/50 text-[13px] text-on-surface-variant text-left border-none bg-transparent w-full">
+          <span class="material-symbols-outlined text-yellow-400">csv</span>
+          <span>Sensor_Data.csv</span>
+        </button>
+        
+        <div class="border-t border-white/5 my-1"></div>
+        <div class="p-sm text-[10px] text-on-surface-variant/40 font-mono text-center">
+          Integrate from Google Drive under Settings
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Responsive Mobile Bottom Navbar (Matches visual mockups) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-30 flex justify-around items-center px-lg py-sm pb-safe bg-surface-container-low/85 backdrop-blur-md border-t border-outline-variant/10 shadow-lg">
+  <a routerLink="/" class="text-on-surface p-2 hover:text-primary active:scale-90 transition-all duration-300 relative no-underline flex flex-col items-center">
+    <span class="material-symbols-outlined" [class.text-emerald-400]="state.activePersona() === 'scientist'">bolt</span>
+    <span class="text-[9px] font-mono">Chat</span>
+  </a>
+
+  <!-- Centered Sparkle Action -->
+  <div class="bg-primary-container text-on-primary-container rounded-full p-2.5 scale-110 shadow-lg cursor-pointer">
+    <span class="material-symbols-outlined animate-spin-slow">auto_awesome</span>
+  </div>
+
+  <a routerLink="/config" class="text-on-surface p-2 hover:text-primary active:scale-90 transition-all duration-300 no-underline flex flex-col items-center">
+    <span class="material-symbols-outlined">settings</span>
+    <span class="text-[9px] font-mono">Settings</span>
+  </a>
+</nav>

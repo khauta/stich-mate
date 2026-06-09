@@ -1,0 +1,6 @@
+{
+  "name": "Stitch AI Core Console",
+  "description": "Multi-persona AI studio console featuring live configuration toggles, behavioral engine modeling, and interactive subatomic telemetry simulation and data streams.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
